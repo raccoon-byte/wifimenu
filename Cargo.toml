@@ -1,0 +1,9 @@
+[package]
+name = "wifimenu"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clippy = "0.0.302"
+regex = "1.10.6"
+terminal_size = "0.4.0"
