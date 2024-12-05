@@ -16,4 +16,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-

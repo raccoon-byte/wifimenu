@@ -19,9 +19,9 @@ pub fn col_print(input: &[String]) {
 
     let mut cur_col: usize = 1;
     for (i, item) in input.iter().enumerate() {
-        let mut item: String = format!("{}. {}", i + 1, item);
-        item.push_str(&" ".repeat(max_width - item.len()));
-        print!("{}", item);
+        let mut formatted_item: String = format!("{}. {}", i + 1, item);
+        formatted_item.push_str(&" ".repeat(max_width - formatted_item.len()));
+        print!("{formatted_item}");
 
         if cur_col < num_cols {
             cur_col += 1;

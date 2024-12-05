@@ -6,7 +6,7 @@ use std::io::Write;
 use std::process;
 
 use crate::errors::Error;
-use crate::ioutil::*;
+use crate::ioutil::{display_menu, input};
 
 const DEFAULT_SAVED_DIR: &str = "/etc/wifisaved";
 
@@ -53,10 +53,10 @@ impl Interface {
         let args: Vec<String> = env::args().collect();
         match args.len() {
             1 => Err(Error::WrongArgumentsCount).context("Usage: doas wifimenu [interface] [mode]"),
-            2 => Ok(Interface::new(args.get(1).unwrap(), WirelessMode::Auto)),
+            2 => Ok(Interface::new(&args[1], WirelessMode::Auto)),
             _ => {
                 let mode: WirelessMode =
-                    match args.get(2).unwrap().trim() {
+                    match args[2].trim() {
                         "11a" => WirelessMode::M11a,
                         "11b" => WirelessMode::M11b,
                         "11g" => WirelessMode::M11g,
@@ -66,7 +66,7 @@ impl Interface {
                             "Currently supported modes are '11a', '11b', '11g', '11n' and '11ac'",
                         ),
                     };
-                Ok(Interface::new(args.get(1).unwrap(), mode))
+                Ok(Interface::new(&args[1], mode))
             }
         }
     }
@@ -75,7 +75,7 @@ impl Interface {
         let dest = format!("/etc/hostname.{}", self.name);
         let from = format!("{}/{}.{}", DEFAULT_SAVED_DIR, self.ssid, self.name);
         self.password = std::fs::read_to_string(&from)?
-            .split("\n")
+            .split('\n')
             .next()
             .context("couldn't read saved connection data. Did you execute as root?")?
             .trim()
@@ -88,7 +88,7 @@ impl Interface {
         Ok(())
     }
 
-    pub fn connect(&mut self) -> Result<()> {
+    pub fn connect(&self) -> Result<()> {
         process::Command::new("ifconfig")
             .args([
                 self.name.clone(),
@@ -122,7 +122,7 @@ impl Interface {
             }
         }
 
-        self.ssid = connections.get(selected_option - 1).unwrap().to_string();
+        self.ssid = connections[selected_option - 1].to_string();
         if let Some(Some(ssid)) = self.ssid.strip_prefix("\"").map(|s| s.strip_suffix("\"")) {
             self.ssid = ssid.to_string();
         }
@@ -207,7 +207,7 @@ impl Interface {
             if !entry.path().is_file() {
                 continue;
             }
-            
+
             if let Some(file_name) = entry.path().file_name() {
                 if let Some(file_name) = file_name.to_str() {
                     if file_name.ends_with(self.name.as_str()) {
@@ -223,7 +223,6 @@ impl Interface {
                     }
                 }
             }
-
         }
         Ok(file_paths)
     }
@@ -247,10 +246,7 @@ impl Interface {
             return Ok(None);
         }
 
-        self.ssid = saved_connections
-            .get(selection.unwrap() - 1)
-            .unwrap()
-            .to_string();
+        self.ssid = saved_connections[selection.unwrap() - 1].to_string();
         self.saved_connect()?;
 
         Ok(Some(()))

@@ -1,7 +1,11 @@
 [package]
 name = "wifimenu"
+description = "A script to connect to wireless networks in OpenBSD in a user-friendly manner"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/raccoon-byte/wifimenu"
+readme = "README.md"
+license = "2-clause BSD"
 
 [dependencies]
 anyhow = "1.0.94"
