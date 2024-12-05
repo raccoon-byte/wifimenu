@@ -6,6 +6,7 @@ edition = "2021"
 repository = "https://github.com/raccoon-byte/wifimenu"
 readme = "README.md"
 license = "2-clause BSD"
+categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0.94"
